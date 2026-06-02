@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>BASES-WM</title>
+  <title>REGISTROS-WM</title>
 
   <script src="https://unpkg.com/@zxing/library@latest/umd/index.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
@@ -74,19 +74,19 @@
     }
 
     .seccion {
-      border: 1px solid #dbeafe;
-      border-radius: 18px;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
       padding: 16px;
       margin-top: 14px;
-      background: #ffffff;
+      background: #fff;
     }
 
     .titulo-seccion {
       font-size: 14px;
       font-weight: bold;
-      color: var(--primary-2);
-      border-left: 5px solid var(--accent);
-      padding-left: 9px;
+      color: var(--primary);
+      border-left: 4px solid var(--accent);
+      padding-left: 8px;
       margin-bottom: 10px;
       text-transform: uppercase;
       letter-spacing: 0.4px;
@@ -105,7 +105,7 @@
       padding: 13px;
       margin-top: 6px;
       border: 1px solid var(--border);
-      border-radius: 11px;
+      border-radius: 10px;
       font-size: 16px;
       outline: none;
       background: #fff;
@@ -114,8 +114,8 @@
     input:focus,
     textarea:focus,
     select:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(0, 113, 206, 0.16);
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(176, 141, 87, 0.16);
     }
 
     input[readonly] {
@@ -133,7 +133,7 @@
       padding: 14px;
       margin-top: 12px;
       border: none;
-      border-radius: 11px;
+      border-radius: 10px;
       font-size: 15px;
       font-weight: bold;
       cursor: pointer;
@@ -145,20 +145,16 @@
       color: #fff;
     }
 
-    .btn-principal:hover {
-      background: var(--primary-2);
-    }
-
     .btn-secundario {
-      background: var(--accent);
-      color: #1f2937;
-      border: 1px solid #eab308;
+      background: var(--accent-soft);
+      color: #4b3621;
+      border: 1px solid #e3d2b8;
     }
 
     .btn-claro {
-      background: #ffffff;
+      background: #f9fafb;
       color: var(--primary);
-      border: 1px solid var(--primary);
+      border: 1px solid var(--border);
     }
 
     video {
@@ -167,7 +163,6 @@
       background: #000;
       margin-top: 12px;
       display: none;
-      border: 3px solid var(--accent);
     }
 
     .mensaje {
@@ -213,7 +208,7 @@
 
     .preview {
       background: #f9fafb;
-      border: 1px dashed #93c5fd;
+      border: 1px dashed #9ca3af;
       border-radius: 12px;
       padding: 12px;
       margin-top: 18px;
@@ -231,7 +226,7 @@
 
     .resultado-usuario {
       background: #f9fafb;
-      border: 1px solid #dbeafe;
+      border: 1px solid #e5e7eb;
       border-radius: 12px;
       padding: 10px;
       margin-top: 8px;
@@ -246,7 +241,7 @@
       margin-top: 8px;
       cursor: pointer;
       font-weight: bold;
-      border: 1px solid #bfdbfe;
+      border: 1px solid #d1d5db;
     }
 
     .opcion-usuario:hover {
@@ -256,7 +251,9 @@
 
     .oculto { display: none; }
 
-    .archivo { background: #f9fafb; }
+    .archivo {
+      background: #f9fafb;
+    }
 
     .fila-opciones-foto {
       display: grid;
@@ -287,22 +284,26 @@
 
 <body>
   <div class="contenedor">
-    <h1>REGISTROS-WM <span class="spark"></span></h1>
-
-    <p class="subtitulo">
-      Registro de tramites.
-    </p>
+    <h1>REGISTROS-WM <span class="spark">✦</span></h1>
+    <p class="subtitulo">Registro de trámites.</p>
 
     <div class="seccion">
       <div class="titulo-seccion">Usuario que registra</div>
 
       <label>Pandape de quien registra</label>
-      <input id="pandapeRegistra" placeholder="Escribe tu Pandape" oninput="validarPandapeRegistra()" />
+      <input
+        id="pandapeRegistra"
+        placeholder="Escribe tu Pandape"
+        oninput="validarPandapeRegistra()"
+      />
 
       <div id="infoPandapeRegistra" class="info-box"></div>
 
       <label>Si no tienes Pandape, busca por nombre completo</label>
-      <input id="busquedaNombreRegistra" placeholder="Empieza por apellidos. Ej. SANCHEZ CABALLERO MARIELA" />
+      <input
+        id="busquedaNombreRegistra"
+        placeholder="Empieza por apellidos. Ej. SANCHEZ CABALLERO MARIELA"
+      />
 
       <button class="btn-secundario" onclick="buscarRegistraPorNombre()">
         Buscar quien registra por nombre
@@ -311,7 +312,11 @@
       <div id="resultadosRegistra" class="resultado-usuario"></div>
 
       <label>Nombre completo validado</label>
-      <input id="nombreRegistra" placeholder="Aquí aparecerá el nombre validado" readonly />
+      <input
+        id="nombreRegistra"
+        placeholder="Aquí aparecerá el nombre validado"
+        readonly
+      />
     </div>
 
     <div class="seccion">
@@ -327,14 +332,17 @@
       <input id="codigoBarras" placeholder="Aquí aparecerá el código detectado o manual" readonly />
 
       <label>Agregar código de barras manual</label>
-      <input id="codigoManual" placeholder="Escribe el código manualmente si no escanea" />
+      <input
+        id="codigoManual"
+        placeholder="Escribe el código manualmente si no escanea"
+      />
 
       <button class="btn-secundario" onclick="agregarCodigoManual()">
         Agregar código manual
       </button>
 
       <div class="nota">
-        Primero se intenta leer el código de barras. Si no se detecta, el sistema intentará leer los números impresos debajo.
+        Primero se intenta leer el código de barras. Si no se detecta, el sistema intentará leer los números impresos debajo. Si tampoco los detecta, deberás escribirlo manualmente.
       </div>
     </div>
 
@@ -342,18 +350,39 @@
       <div class="titulo-seccion">Datos de venta</div>
 
       <label>Últimos 4 dígitos de tarjeta</label>
-      <input id="ultimos4" inputmode="numeric" maxlength="4" placeholder="Ej. 4821" oninput="soloNumeros(this, 4)" />
+      <input
+        id="ultimos4"
+        inputmode="numeric"
+        maxlength="4"
+        placeholder="Ej. 4821"
+        oninput="soloNumeros(this, 4)"
+      />
 
       <label>Folio</label>
-      <input id="folio" inputmode="numeric" placeholder="Ej. 17753126" oninput="soloNumeros(this, 20)" />
+      <input
+        id="folio"
+        inputmode="numeric"
+        placeholder="Ej. 17753126"
+        oninput="soloNumeros(this, 20)"
+      />
 
       <label>Determinante</label>
-      <input id="determinante" inputmode="numeric" maxlength="4" placeholder="Solo 4 números. Ej. 0013" oninput="validarDeterminanteManual()" />
+      <input
+        id="determinante"
+        inputmode="numeric"
+        maxlength="4"
+        placeholder="Solo 4 números. Ej. 0013"
+        oninput="validarDeterminanteManual()"
+      />
 
       <div id="infoDeterminante" class="info-box"></div>
 
       <label>Nombre de determinante</label>
-      <input id="nombreDeterminante" placeholder="Aquí aparecerá el nombre de la determinante" readonly />
+      <input
+        id="nombreDeterminante"
+        placeholder="Aquí aparecerá el nombre de la determinante"
+        readonly
+      />
 
       <label>Fecha de venta</label>
       <input id="fechaVenta" type="date" />
@@ -374,6 +403,14 @@
     <div class="seccion">
       <div class="titulo-seccion">Evidencias opcionales</div>
 
+      <label>¿Tiene cupón dental?</label>
+      <select id="cuponDental">
+        <option value="">Opcional - selecciona si aplica</option>
+        <option value="SI">SÍ</option>
+        <option value="NO">NO</option>
+      </select>
+      <div class="nota">Este campo es opcional. Si no aplica, puedes dejarlo sin seleccionar.</div>
+
       <label>Evidencia QR</label>
       <div class="fila-opciones-foto">
         <button type="button" class="btn-secundario" onclick="abrirSelectorFoto('evidenciaQR', 'camara')">📷 Abrir cámara</button>
@@ -391,6 +428,8 @@
       <input id="evidenciaCompra_camara" class="archivo oculto" type="file" accept="image/*" capture="environment" onchange="fotoSeleccionada('evidenciaCompra', 'camara')" />
       <input id="evidenciaCompra_galeria" class="archivo oculto" type="file" accept="image/*" onchange="fotoSeleccionada('evidenciaCompra', 'galeria')" />
       <div id="nombre_evidenciaCompra" class="nombre-archivo">Sin foto seleccionada.</div>
+
+      <div class="nota">Estas fotos ya no son obligatorias. Puedes tomar la foto en el momento o elegirla desde galería.</div>
     </div>
 
     <div class="seccion">
@@ -404,15 +443,26 @@
 
       <div id="seccionCerrador" class="oculto">
         <label>Pandape del cerrador</label>
-        <input id="pandapeCerrador" placeholder="Agrega Pandape del cerrador" oninput="validarPandapeCerrador()" />
+        <input
+          id="pandapeCerrador"
+          placeholder="Agrega Pandape del cerrador"
+          oninput="validarPandapeCerrador()"
+        />
 
         <div id="infoPandapeCerrador" class="info-box"></div>
 
         <label>Nombre del cerrador</label>
-        <input id="nombreCerrador" placeholder="Aquí aparecerá el nombre del cerrador" readonly />
+        <input
+          id="nombreCerrador"
+          placeholder="Aquí aparecerá el nombre del cerrador"
+          readonly
+        />
 
         <label>Si no tienes Pandape, busca por nombre</label>
-        <input id="busquedaNombreCerrador" placeholder="Empieza por apellidos. Ej. SANCHEZ CABALLERO MARIELA" />
+        <input
+          id="busquedaNombreCerrador"
+          placeholder="Empieza por apellidos. Ej. SANCHEZ CABALLERO MARIELA"
+        />
 
         <button class="btn-secundario" onclick="buscarCerradorPorNombre()">
           Buscar cerrador por nombre
@@ -447,12 +497,21 @@
         <input id="evidenciaProgramaFisico_camara" class="archivo oculto" type="file" accept="image/*" capture="environment" onchange="fotoSeleccionada('evidenciaProgramaFisico', 'camara')" />
         <input id="evidenciaProgramaFisico_galeria" class="archivo oculto" type="file" accept="image/*" onchange="fotoSeleccionada('evidenciaProgramaFisico', 'galeria')" />
         <div id="nombre_evidenciaProgramaFisico" class="nombre-archivo">Sin foto seleccionada.</div>
+        <div class="nota">Esta foto también es opcional. Puedes tomarla al momento o elegirla desde galería.</div>
       </div>
     </div>
 
-    <button class="btn-principal" onclick="guardarEnGoogleSheets()">Guardar en BASES-WM</button>
-    <button class="btn-claro" onclick="copiarRegistro()">Copiar registro sin tarjeta</button>
-    <button class="btn-claro" onclick="limpiarFormulario()">Nueva captura</button>
+    <button class="btn-principal" onclick="guardarEnGoogleSheets()">
+      Guardar en BASES-WM
+    </button>
+
+    <button class="btn-claro" onclick="copiarRegistro()">
+      Copiar registro sin tarjeta
+    </button>
+
+    <button class="btn-claro" onclick="limpiarFormulario()">
+      Nueva captura
+    </button>
 
     <div id="mensaje" class="mensaje"></div>
 
@@ -464,7 +523,7 @@
   <iframe name="iframeOculto" style="display:none;"></iframe>
 
   <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyV2Igi01_HRQkNryT1-VkhhjmWGQALW7NvGHnkXXXjE42tgH_MFPPm37TEGZSugiy1/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxwPX6RopyCxf8WaLWgIaW3OXMFERNc4aEgeUlBlSQCVbemkjT3m9Pl184rwXtlVBah5g/exec";
 
     const codeReader = new ZXing.BrowserMultiFormatReader();
 
@@ -567,7 +626,9 @@
         function limpiar() {
           clearTimeout(timeout);
           delete window[callbackName];
-          if (script.parentNode) script.parentNode.removeChild(script);
+          if (script.parentNode) {
+            script.parentNode.removeChild(script);
+          }
         }
 
         window[callbackName] = function (respuesta) {
@@ -924,11 +985,7 @@
 
             detenerScanner();
             codigoBarras.value = "";
-
-            mostrarMensaje(
-              "No se pudo detectar ni el código de barras ni los números. Escanea de nuevo o escríbelo manualmente.",
-              "error"
-            );
+            mostrarMensaje("No se pudo detectar ni el código de barras ni los números. Escanea de nuevo o escríbelo manualmente.", "error");
           }
         }, 15000);
 
@@ -971,12 +1028,13 @@
 
         if (temporizadorScanner) {
           clearTimeout(temporizadorScanner);
-          temporizadorScanner = null;
         }
       } catch (error) {
         console.error(error);
       }
     }
+
+
 
     function prepararCanvasParaOCR(video) {
       const anchoVideo = video.videoWidth;
@@ -994,17 +1052,7 @@
 
       const ctx = canvas.getContext("2d");
 
-      ctx.drawImage(
-        video,
-        0,
-        inicioY,
-        anchoVideo,
-        altoRecorte,
-        0,
-        0,
-        canvas.width,
-        canvas.height
-      );
+      ctx.drawImage(video, 0, inicioY, anchoVideo, altoRecorte, 0, 0, canvas.width, canvas.height);
 
       const imagen = ctx.getImageData(0, 0, canvas.width, canvas.height);
       const data = imagen.data;
@@ -1019,7 +1067,6 @@
       }
 
       ctx.putImageData(imagen, 0, 0);
-
       return canvas;
     }
 
@@ -1041,14 +1088,10 @@
         }
 
         const canvas = prepararCanvasParaOCR(video);
-
         if (!canvas) return "";
 
         const worker = await Tesseract.createWorker("eng");
-
-        await worker.setParameters({
-          tessedit_char_whitelist: "0123456789"
-        });
+        await worker.setParameters({ tessedit_char_whitelist: "0123456789" });
 
         const resultado = await worker.recognize(canvas);
         await worker.terminate();
@@ -1204,8 +1247,8 @@
       const nombreDeterminante = document.getElementById("nombreDeterminante").value.trim();
       const fechaVenta = document.getElementById("fechaVenta").value;
       const estatusTarjeta = document.getElementById("estatusTarjeta").value;
+      const cuponDental = document.getElementById("cuponDental").value;
       const comentarios = document.getElementById("comentarios").value.trim();
-
       const p0 = document.getElementById("p0").value;
       const programaFisico = document.getElementById("programaFisico").value;
       const tipoProgramaFisico = document.getElementById("tipoProgramaFisico").value;
@@ -1255,6 +1298,18 @@
         return null;
       }
 
+      if (p0 === "SI" && !cerradorSeleccionado) {
+        mostrarMensaje("Como P0 es SÍ, debes agregar un cerrador válido por Pandape o nombre.", "error");
+        return null;
+      }
+
+      if (programaFisico === "SI") {
+        if (!tipoProgramaFisico) {
+          mostrarMensaje("Selecciona AHORRA MAS o PROGRAMA 0.", "error");
+          return null;
+        }
+      }
+
       return {
         fecha_captura: new Date().toLocaleString("es-MX"),
         pandape_registra: usuarioRegistra.pandape || pandapeRegistra || "",
@@ -1266,10 +1321,11 @@
         nombre_determinante: nombreDeterminante,
         fecha_venta: fechaVenta,
         estatus_tarjeta: estatusTarjeta,
+        cupon_dental: cuponDental || "",
         comentarios: comentarios,
         p0: p0,
-        cerrador_pandape: p0 === "SI" && cerradorSeleccionado ? cerradorSeleccionado.pandape || "" : "",
-        cerrador_nombre: p0 === "SI" && cerradorSeleccionado ? cerradorSeleccionado.nombre_completo || "" : "",
+        cerrador_pandape: p0 === "SI" ? (cerradorSeleccionado.pandape || "") : "",
+        cerrador_nombre: p0 === "SI" ? (cerradorSeleccionado.nombre_completo || "") : "",
         programa_fisico: programaFisico,
         tipo_programa_fisico: programaFisico === "SI" ? tipoProgramaFisico : ""
       };
@@ -1290,6 +1346,7 @@ DETERMINANTE: ${registro.determinante}
 NOMBRE DETERMINANTE: ${registro.nombre_determinante}
 FECHA DE VENTA: ${registro.fecha_venta}
 ESTATUS DE TARJETA: ${registro.estatus_tarjeta || "-"}
+CUPÓN DENTAL: ${registro.cupon_dental || "-"}
 P0: ${registro.p0}
 CERRADOR PANDAPE: ${registro.cerrador_pandape || "-"}
 CERRADOR NOMBRE: ${registro.cerrador_nombre || "-"}
@@ -1307,6 +1364,7 @@ DETERMINANTE: ${registro.determinante}
 NOMBRE DETERMINANTE: ${registro.nombre_determinante}
 FECHA DE VENTA: ${registro.fecha_venta}
 ESTATUS DE TARJETA: ${registro.estatus_tarjeta || "-"}
+CUPÓN DENTAL: ${registro.cupon_dental || "-"}
 P0: ${registro.p0}
 CERRADOR PANDAPE: ${registro.cerrador_pandape || "-"}
 CERRADOR NOMBRE: ${registro.cerrador_nombre || "-"}
@@ -1331,7 +1389,7 @@ COMENTARIOS: ${registro.comentarios || "-"}`;
       registroActual = registro;
       actualizarPreview(registro, true);
 
-      mostrarMensaje("Preparando fotos opcionales y enviando registro...", "");
+      mostrarMensaje("Preparando evidencias y enviando registro...", "");
 
       try {
         const evidenciaQRBase64 = await archivoAImagenBase64(obtenerInputFoto("evidenciaQR"));
@@ -1355,6 +1413,7 @@ COMENTARIOS: ${registro.comentarios || "-"}`;
           nombre_determinante: registro.nombre_determinante,
           fecha_venta: registro.fecha_venta,
           estatus_tarjeta: registro.estatus_tarjeta,
+          cupon_dental: registro.cupon_dental,
           comentarios: registro.comentarios,
           p0: registro.p0,
           cerrador_pandape: registro.cerrador_pandape,
@@ -1378,7 +1437,7 @@ COMENTARIOS: ${registro.comentarios || "-"}`;
         form.submit();
         document.body.removeChild(form);
 
-        mostrarMensaje("✅ Registro enviado correctamente a BASES-WM.", "ok");
+        mostrarMensaje("✅ Registro enviado con evidencias. Revisa la pestaña CAPTURAS.", "ok");
 
       } catch (error) {
         console.error(error);
@@ -1416,8 +1475,8 @@ COMENTARIOS: ${registro.comentarios || "-"}`;
       document.getElementById("nombreDeterminante").value = "";
       document.getElementById("fechaVenta").value = "";
       document.getElementById("estatusTarjeta").value = "";
+      document.getElementById("cuponDental").value = "";
       document.getElementById("comentarios").value = "";
-
       limpiarEvidencia("evidenciaQR");
       limpiarEvidencia("evidenciaCompra");
 
@@ -1449,7 +1508,6 @@ COMENTARIOS: ${registro.comentarios || "-"}`;
       limpiarCaja("infoDeterminante");
 
       document.getElementById("preview").textContent = "Aquí aparecerá el registro generado.";
-
       mostrarMensaje("Lista para una nueva captura.", "ok");
     }
   </script>
