@@ -501,17 +501,12 @@
       </div>
     </div>
 
-    <button class="btn-principal" onclick="guardarEnGoogleSheets()">
-      Guardar en BASES-WM
-    </button>
+    <div class="nota" style="margin-top:16px; text-align:center;">
+      Presiona <strong>GUARDAR Y COPIAR</strong>. Se guardará en BASES-WM y se copiará el mensaje para pegarlo en el grupo de tienda.
+    </div>
 
-    <button class="btn-claro" onclick="copiarRegistro()">
-      Copiar registro sin tarjeta
-    </button>
-
-    <button class="btn-claro" onclick="limpiarFormulario()">
-      Nueva captura
-    </button>
+    <button class="btn-principal" onclick="guardarEnGoogleSheets()">GUARDAR Y COPIAR</button>
+    <button class="btn-claro" onclick="limpiarFormulario()">Nueva captura</button>
 
     <div id="mensaje" class="mensaje"></div>
 
@@ -520,7 +515,7 @@
     </div>
   </div>
 
-  <iframe name="iframeOculto" style="display:none;"></iframe>
+  <iframe id="iframeOculto" name="iframeOculto" style="display:none;"></iframe>
 
   <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyV2Igi01_HRQkNryT1-VkhhjmWGQALW7NvGHnkXXXjE42tgH_MFPPm37TEGZSugiy1/exec";
@@ -1183,7 +1178,10 @@
       if (contenedor) contenedor.textContent = "Sin foto seleccionada.";
     }
 
-    function archivoAImagenBase64(inputFile, maxWidth = 1200, calidad = 0.70) {
+    const MAX_IMAGEN_ORIGINAL_MB = 45;
+    const MAX_IMAGEN_FINAL_MB = 1.6;
+
+    function archivoAImagenBase64(inputFile, maxWidth = 1600, calidadInicial = 0.78) {
       return new Promise((resolve, reject) => {
         const archivo = inputFile && inputFile.files ? inputFile.files[0] : null;
 
@@ -1197,29 +1195,71 @@
           return;
         }
 
+        const mbOriginal = archivo.size / (1024 * 1024);
+
+        if (mbOriginal > MAX_IMAGEN_ORIGINAL_MB) {
+          reject(new Error(`La imagen pesa ${mbOriginal.toFixed(1)} MB. Sube una imagen menor a ${MAX_IMAGEN_ORIGINAL_MB} MB.`));
+          return;
+        }
+
         const reader = new FileReader();
 
         reader.onload = function (evento) {
           const img = new Image();
 
           img.onload = function () {
-            let width = img.width;
-            let height = img.height;
+            try {
+              const canvas = document.createElement("canvas");
+              const ctx = canvas.getContext("2d");
 
-            if (width > maxWidth) {
-              height = Math.round((height * maxWidth) / width);
-              width = maxWidth;
+              let anchoObjetivo = maxWidth;
+              let calidad = calidadInicial;
+              let base64 = "";
+
+              for (let intento = 0; intento < 8; intento++) {
+                let width = img.width;
+                let height = img.height;
+
+                if (width > anchoObjetivo) {
+                  height = Math.round((height * anchoObjetivo) / width);
+                  width = anchoObjetivo;
+                }
+
+                canvas.width = width;
+                canvas.height = height;
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(img, 0, 0, width, height);
+
+                base64 = canvas.toDataURL("image/jpeg", calidad);
+
+                const mbFinal = (base64.length * 0.75) / (1024 * 1024);
+
+                if (mbFinal <= MAX_IMAGEN_FINAL_MB) {
+                  resolve(base64);
+                  return;
+                }
+
+                if (calidad > 0.48) {
+                  calidad -= 0.10;
+                } else {
+                  anchoObjetivo = Math.max(800, Math.floor(anchoObjetivo * 0.82));
+                  calidad = 0.55;
+                }
+              }
+
+              const mbFinal = (base64.length * 0.75) / (1024 * 1024);
+
+              if (mbFinal > 2.2) {
+                reject(new Error("La imagen sigue muy pesada después de comprimirla. Intenta subir una foto más ligera o recortada."));
+                return;
+              }
+
+              resolve(base64);
+
+            } catch (error) {
+              reject(new Error("No se pudo comprimir la imagen"));
             }
-
-            const canvas = document.createElement("canvas");
-            canvas.width = width;
-            canvas.height = height;
-
-            const ctx = canvas.getContext("2d");
-            ctx.drawImage(img, 0, 0, width, height);
-
-            const base64 = canvas.toDataURL("image/jpeg", calidad);
-            resolve(base64);
           };
 
           img.onerror = function () {
@@ -1235,6 +1275,60 @@
 
         reader.readAsDataURL(archivo);
       });
+    }
+
+    function esperarConfirmacionEnvio(timeoutMs = 30000) {
+      return new Promise((resolve, reject) => {
+        const iframe = document.getElementById("iframeOculto");
+
+        if (!iframe) {
+          reject(new Error("No se encontró el iframe de confirmación"));
+          return;
+        }
+
+        let terminado = false;
+
+        const timer = setTimeout(() => {
+          if (terminado) return;
+          terminado = true;
+          iframe.onload = null;
+          reject(new Error("No se pudo confirmar el envío"));
+        }, timeoutMs);
+
+        iframe.onload = function () {
+          if (terminado) return;
+          terminado = true;
+          clearTimeout(timer);
+          iframe.onload = null;
+          resolve(true);
+        };
+      });
+    }
+
+    async function copiarTextoSeguro(texto) {
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(texto);
+          return true;
+        }
+
+        const area = document.createElement("textarea");
+        area.value = texto;
+        area.style.position = "fixed";
+        area.style.left = "-9999px";
+        area.style.top = "-9999px";
+        document.body.appendChild(area);
+        area.focus();
+        area.select();
+
+        const copiado = document.execCommand("copy");
+        document.body.removeChild(area);
+
+        return copiado;
+      } catch (error) {
+        console.error("No se pudo copiar:", error);
+        return false;
+      }
     }
 
     function validarFormulario() {
@@ -1383,13 +1477,24 @@ COMENTARIOS: ${registro.comentarios || "-"}`;
         return;
       }
 
+      if (!navigator.onLine) {
+        mostrarMensaje("❌ No tienes conexión a internet. No se pudo enviar el registro.", "error");
+        return;
+      }
+
       const registro = validarFormulario();
       if (!registro) return;
 
       registroActual = registro;
-      actualizarPreview(registro, true);
 
-      mostrarMensaje("Preparando evidencias y enviando registro...", "");
+      const textoParaGrupo = actualizarPreview(registro, false);
+      const copiado = await copiarTextoSeguro(textoParaGrupo);
+
+      if (copiado) {
+        mostrarMensaje("📋 Mensaje copiado. Preparando evidencias y enviando registro...", "");
+      } else {
+        mostrarMensaje("Preparando evidencias y enviando registro... Si no se copia automático, copia el mensaje de abajo manualmente.", "");
+      }
 
       try {
         const evidenciaQRBase64 = await archivoAImagenBase64(obtenerInputFoto("evidenciaQR"));
@@ -1433,31 +1538,31 @@ COMENTARIOS: ${registro.comentarios || "-"}`;
           form.appendChild(input);
         });
 
+        const confirmacionEnvio = esperarConfirmacionEnvio(30000);
+
         document.body.appendChild(form);
         form.submit();
-        document.body.removeChild(form);
 
-        mostrarMensaje("✅ Registro enviado con evidencias. Revisa la pestaña CAPTURAS.", "ok");
+        try {
+          await confirmacionEnvio;
+          mostrarMensaje(
+            copiado
+              ? "✅ Registro enviado y mensaje copiado correctamente. Pégalo en el grupo de tienda."
+              : "✅ Registro enviado correctamente. Copia manualmente el mensaje de abajo para el grupo de tienda.",
+            "ok"
+          );
+        } catch (errorConfirmacion) {
+          console.warn(errorConfirmacion);
+          mostrarMensaje("⚠️ No se pudo confirmar el envío. Revisa tu conexión y verifica en el Excel antes de volver a capturar.", "error");
+        } finally {
+          if (form.parentNode) {
+            document.body.removeChild(form);
+          }
+        }
 
       } catch (error) {
         console.error(error);
-        mostrarMensaje("No se pudieron procesar las evidencias. Intenta con fotos más ligeras.", "error");
-      }
-    }
-
-    async function copiarRegistro() {
-      const registro = validarFormulario();
-      if (!registro) return;
-
-      registroActual = registro;
-
-      const textoSinTarjeta = actualizarPreview(registro, false);
-
-      try {
-        await navigator.clipboard.writeText(textoSinTarjeta);
-        mostrarMensaje("📋 Registro copiado sin últimos 4 de tarjeta.", "ok");
-      } catch (error) {
-        mostrarMensaje("No se pudo copiar. Selecciona el texto manualmente.", "error");
+        mostrarMensaje(error.message || "No se pudieron procesar las evidencias. Intenta con fotos más ligeras.", "error");
       }
     }
 
